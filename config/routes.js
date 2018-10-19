@@ -2,21 +2,25 @@ const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+//import middleware
 const { authenticate } = require('./middlewares');
 
 const db = require('../database/dbConfig.js');
 
+//export endpoints
 module.exports = server => {
   server.post('/api/register', register);
   server.post('/api/login', login);
   server.get('/api/jokes', authenticate, getJokes);
 };
 
+//define register function
 function register(req, res) {
-  // implement user registration
   const creds = req.body;
+  //create password hash
   const hash = bcrypt.hashSync(creds.password, 10);
   creds.password = hash;
+  //store user info and hash in database
   db('users') .insert(creds)
               .then(ids => {
                 const id = ids[0];
@@ -27,14 +31,13 @@ function register(req, res) {
             });
 }
 
+//import secret key
 const jwtKey = require('../_secrets/keys').jwtKey;
 
-// const jwtSecret = process.env.JWT_SECRET || 'add a secret to your .env file with this key';
-
+//define function to generate token
 function generateToken(user) {
   const jwtPayload = {
       ...user
-      //,roles: ['admin', 'root']
   }
   const jwtOptions = {
       expiresIn: '1h'
@@ -42,19 +45,20 @@ function generateToken(user) {
   return jwt.sign(jwtPayload, jwtKey, jwtOptions);
 }
 
+//define login function
 function login(req, res) {
-  // implement user login
   const credentials = req.body;
   db('users') .where({username: credentials.username})
               .first()
               .then(user =>{
-                if (user && bcrypt.compareSync(credentials.password, user.password)){
+                //compare password entered and stored password
+                if (user && bcrypt.compareSync(credentials.password, user.password)){//if user found and password matched
                   const token = generateToken(user);
                   res.status(200).json({Welcome: user.username, token});
-                } else if (user){
+                } else if (user){//condition: user found but password not matching
                   res.status(401).json({ message: 'Your password is incorrect.'})
-                } else {
-                  res.status(401).json({ message: 'Your username cannot be found.'})
+                } else {//no match found for user name
+                  res.status(401).json({ message: 'Your username is not found in database.'})
                 }
               })
               .catch(err =>{
@@ -62,6 +66,7 @@ function login(req, res) {
               })
 }
 
+//define function to retreive jokes
 function getJokes(req, res) {
   axios
     .get(

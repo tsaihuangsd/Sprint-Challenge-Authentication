@@ -18,7 +18,6 @@ function authenticate(req, res, next) {
           req.decoded = decoded;
           next();
         }
-
       });
   } else {
     return res.status(401).json({
