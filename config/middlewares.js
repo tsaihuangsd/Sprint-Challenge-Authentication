@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 
+//import secret key for authentication
 const jwtKey = require('../_secrets/keys').jwtKey;
 
-// quickly see what this file exports
+// export middleware
 module.exports = {
   authenticate
 };
@@ -11,6 +12,7 @@ module.exports = {
 function authenticate(req, res, next) {
   const token = req.get('Authorization');
   if (token) {
+      //verify if token was encrypted from the secret key
       jwt.verify(token, jwtKey, (err, decoded) => {
         if (err) {  
           return res.status(401).json(err)

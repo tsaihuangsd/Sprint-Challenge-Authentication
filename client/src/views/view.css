@@ -1,0 +1,21 @@
+.alertMessage {
+    display: none;
+}
+
+.joke-cards {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: space-around;
+    justify-content: space-evenly;
+}
+
+.joke-card {
+    display: flex;
+    flex-direction: column;
+    border:solid 1px black;
+    width: 40%;
+    height: 150px;
+    margin: 20px;
+    text-align: left;
+    line-height: 25px;
+}
