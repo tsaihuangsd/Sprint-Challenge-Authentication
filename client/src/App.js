@@ -8,6 +8,7 @@ import HomeView from './views/HomeView.js';
 import SignUpView from './views/SignUpView.js';
 import SignInView from './views/SignInView.js';
 import JokesView from './views/JokesView.js';
+import SignOutView from './views/SignOutView.js';
 
 class App extends Component {
   render() {
@@ -33,9 +34,10 @@ class App extends Component {
                           className="link">
                       Jokes</NavLink>
                 &nbsp;|&nbsp;
-                <div  onClick={this.signout}
-                      className="link">
-                      Signout</div>
+                <NavLink  to="/signout" 
+                          onClick={this.signout} 
+                          className="link">
+                      Sign Out</NavLink>
            </nav>
         </div>
         <div className="display-panel">
@@ -48,6 +50,8 @@ class App extends Component {
                     component={SignInView}/>
             <Route  path='/jokes'
                     component={JokesView}/>
+            <Route  path="/signout"
+                    component={SignOutView}/>
         </div>
         
       </div>
